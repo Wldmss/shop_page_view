@@ -1,0 +1,41 @@
+.appBar {
+    background-color: white;
+    height: '40px';
+}
+
+.black {
+    color: black;
+}
+
+.gray {
+    color: rgba(0,0,0,0.7);
+}
+
+.account_size {
+    font-size: 0.75em !important;
+}
+
+.typo_space {
+    text-align: center;
+}
+
+.button_space {
+    width: 55px;
+    display: inline-block;
+}
+
+.float_right {
+    float: right;
+    margin-top: 10px;
+}
+
+.button_space :hover {
+    /* background-color: rgba(0,0,0,0.1); */
+    color: black;
+    font-weight: bold;
+}
+
+.toolbar {
+    min-height: 40px !important;
+    display: inline-block !important;
+}
