@@ -11,8 +11,20 @@
     color: rgba(0,0,0,0.7);
 }
 
-.account_size {
-    font-size: 0.75em !important;
+.button_white {
+    font-size: 0.85em !important;
+    width: 40px;
+    height: 100%;
+    background-color: rgba(0,0,0,0) !important;
+    border: 0 !important;
+}
+
+.button_white_small {
+    font-size: 0.85em !important;
+    width: 40px;
+    height: 100%;
+    background-color: rgba(0,0,0,0) !important;
+    border: 0 !important;
 }
 
 .typo_space {
@@ -20,22 +32,34 @@
 }
 
 .button_space {
-    width: 55px;
     display: inline-block;
-}
-
-.float_right {
-    float: right;
-    margin-top: 10px;
+    height: 100%;
 }
 
 .button_space :hover {
-    /* background-color: rgba(0,0,0,0.1); */
-    color: black;
+    background-color: rgba(0,0,0,0.03) !important;
+    color: chocolate;
     font-weight: bold;
+}
+
+.account_button_box {
+    float: right;
+    height: 100%;
 }
 
 .toolbar {
     min-height: 40px !important;
     display: inline-block !important;
+}
+
+.account_img {
+    display: inline-block;
+    height: 100%;
+    color: black;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.account_img :hover {
+    color: chocolate;
 }

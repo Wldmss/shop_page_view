@@ -17,7 +17,7 @@ function MainComponent(props){
     },[]);
 
     return (
-        <>
+        <div style={{margin:'0 10% 30px 10%'}}>
             <HeaderComponent />
             <MenuComponent />
             <SideComponent />
@@ -27,7 +27,7 @@ function MainComponent(props){
             </div>
 
             <FooterComponent />
-        </>
+        </div>
     );
 }
 

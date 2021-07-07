@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { AppBar, Toolbar, Fab, Paper, Button, Menu, MenuItem, Divider, FormHelperText, FormControl, Select, InputLabel, Radio, RadioGroup, FormControlLabel, ListItemIcon, Typography, Switch, ButtonGroup, IconButton } from '@material-ui/core';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import MenuIcon from '@material-ui/icons/Menu';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import LocalMallOutlinedIcon from '@material-ui/icons/LocalMallOutlined';
 import SearchIcon from '@material-ui/icons/Search';
 import Zoom from '@material-ui/core/Zoom';
 import InputBase from '@material-ui/core/InputBase';
@@ -85,18 +88,18 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-//header form
+/**go to top*/
 function HeaderComponent(props){
-    const { children, window } = props;
     const classes = useStyles();
+    const { children, window } = props;
     const trigger = useScrollTrigger({
         target: window ? window() : undefined,
         disableHysteresis: true,
         threshold: 100,
     });
 
-    const handleClick = (event) => {
-        const anchor = (event.target.ownerDocument || document).querySelector('#header-bar');
+    const handleClick = (e) => {
+        const anchor = (e.target.ownerDocument || document).querySelector('#header-bar');
     
         if (anchor) {
           anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -125,8 +128,128 @@ HeaderComponent.propTypes = {
     window: PropTypes.func,
 };
 
-export default function BackToTop(props){
+/**main */
+function HeaderMain(props){
     const classes = useStyles();
+    const [logIn,setLogIn] = useState(true);
+    const id_num = useRef();
+    const btnTitle = [
+        {
+            id:1,
+            name:"장바구니",
+            login: false,
+        },
+        {
+            id:2,
+            name:"좋아요",
+            login: !logIn,
+        },
+        {
+            id:3,
+            name:"로그인",
+            login: logIn,
+        },
+        {
+            id:4,
+            name:"회원가입",
+            login: logIn,
+        },
+        {
+            id:5,
+            name:"로그아웃",
+            login: !logIn,
+        },
+        {
+            id:6,
+            name:"마이페이지",
+            login: !logIn,
+        },
+    ];
+
+    function ShowIcon({btnVal}) {
+        const {id,name,login} = btnVal;
+        return(
+            <>
+            { id === 1 ?
+                <LocalMallOutlinedIcon style={{fontSize:30, display: login ? "none" : ''}}/>
+            : id == 2 &&
+                <FavoriteBorderIcon style={{fontSize:30}}/>
+            }
+            </>
+        );
+    }
+
+    /**header button*/
+    function AccountButton({btnVal}) {
+        const {id,name,login} = btnVal;
+        const [accountMenu,setAccountMenu] = useState({
+            account_id : null,
+            open : false,
+        });
+
+        const handleAccountClick = e => {
+            setAccountMenu({...accountMenu, open: true, account_id: e.currentTarget});
+        }
+
+        const handleAccountClose = () => {
+            setAccountMenu({...accountMenu, open: false});
+        }
+
+        return(
+            <>
+            {id === 6 ? 
+                <div className="account_img">
+                    <Button
+                        aria-owns={accountMenu.open ? 'simple-menu' : null}
+                        aria-haspopup="true"
+                        // className="button_white"
+                        className={window.innerWidth > 1200 ? "button_white" : "button_white_small"}
+                        disableRipple={true}
+                        onClick={handleAccountClick}
+                        onMouseOver={handleAccountClick}
+                    >
+                        <AccountCircleIcon style={{fontSize:30}} onClick={() => clickAccountButton(id)} />
+                    </Button>
+                    {/* <Menu
+                        id="simple-menu"
+                        anchorEl={accountMenu.account_id}
+                        open={accountMenu.open}
+                        onClose={handleAccountClose}
+                    >
+                        {btnTitle.map( btn => (
+                            !btn.login &&
+                            <MenuItem onClick={handleAccountClose} key={btn.id}>{btn.name}</MenuItem>
+                        ))}
+                    </Menu> */}
+                </div>
+            :
+                <div className={window.innerWidth > 1200 ? "button_space" : "account_img"}>
+                    <button 
+                        // className="button_white"
+                        className={window.innerWidth > 1200 ? "button_white" : "button_white_small"} 
+                        style={{display:window.innerWidth > 1200 && !login ? '' : !login && id <= 2 ? '' : 'none'}} 
+                        key={id} 
+                        onClick={() => clickAccountButton(id)}
+                    >
+                        {window.innerWidth > 1200 ? name : <ShowIcon btnVal={btnVal} />}
+                    </button>
+                </div>
+            }
+            </>
+        );
+    }
+
+    /**account button click event */
+    function clickAccountButton(id_val){
+        let info = id_val;
+        console.log(info);
+    }
+
+    useEffect(() => {
+        id_num.current = btnTitle.length;
+        console.log(window.innerWidth + " :: " + window.outerWidth);
+        //window.innerWidth = 500이 최소 in web
+    },[]);
 
     return (
         <>
@@ -155,26 +278,18 @@ export default function BackToTop(props){
                         />
                     </div>
 
-                    <div className="float_right">
-                        <div className="button_space">
-                            <Typography className="gray account_size typo_space" noWrap>
-                                장바구니
-                            </Typography>
-                        </div>
-                        <div className="button_space">
-                            <Typography className="gray account_size typo_space" noWrap>
-                                로그인
-                            </Typography>
-                        </div>
-                        <div className="button_space">
-                            <Typography className="gray account_size typo_space" noWrap>
-                                회원가입
-                            </Typography>
-                        </div>
+                    <div className="account_button_box">
+                        {btnTitle.map( btn => (
+                            <AccountButton key={btn.id} btnVal={btn} onClick={() => clickAccountButton(btn.id)}/>
+                        ))}
                     </div>
                 </Toolbar>
             </AppBar>
             <Divider />
+            <div style={{background:'yellow', width: '100px', height:'200px', float:'right'}}>
+
+            </div>
+
             <div>
 
             </div>
@@ -188,3 +303,5 @@ export default function BackToTop(props){
         </>
     );
 }
+
+export default HeaderMain;
