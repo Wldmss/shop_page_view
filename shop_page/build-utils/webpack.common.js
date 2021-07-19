@@ -30,7 +30,11 @@ const config = {
                     "css-loader",
                     "sass-loader"
                 ] 
-            }
+            },
+            {
+                test: /\.(png|jpg)$/,
+                use: ["file-loader","url-loader"]
+            },
         ],
     },
     optimization: {

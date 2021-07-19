@@ -13,7 +13,7 @@
 
 .button_white {
     font-size: 0.85em !important;
-    width: 40px;
+    /* width: 40px; */
     height: 100%;
     background-color: rgba(0,0,0,0) !important;
     border: 0 !important;
@@ -32,7 +32,7 @@
 }
 
 .button_space {
-    display: inline-block;
+    display: inline;
     height: 100%;
 }
 
@@ -50,6 +50,7 @@
 .toolbar {
     min-height: 40px !important;
     display: inline-block !important;
+    width: 98%;
 }
 
 .account_img {
@@ -62,4 +63,12 @@
 
 .account_img :hover {
     color: chocolate;
+}
+
+.MuiButton-text {
+    padding: 0 !important;
+}
+
+.MuiButton-root {
+    min-width: 40px !important;
 }

@@ -24,7 +24,15 @@ const proxy = require('http-proxy-middleware');
       {
         test:/\.s[ac]css$/,
         use: [ 'postcss-loader', 'sass-loader'], 
-      }
+      },
+      {
+          test: /\.(png|jpg)$/,
+          use: ["file-loader","url-loader"]
+      },
+      // {
+      //   test: /\.(png|jpg|gif)$/,
+      //   use: ['url-loader']
+      // },
     ]
   },
   node :{

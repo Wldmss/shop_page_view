@@ -12,6 +12,8 @@ import SearchIcon from '@material-ui/icons/Search';
 import Zoom from '@material-ui/core/Zoom';
 import InputBase from '@material-ui/core/InputBase';
 import "../../css/homepage.css";
+import Logo from "../../image/crab.png";
+import { Component } from 'react';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -72,19 +74,21 @@ const useStyles = makeStyles((theme) => ({
     },
     inputRoot: {
         color: 'inherit',
+        height:'100%',
     },
     inputInput: {
         padding: theme.spacing(1, 1, 1, 0),
         paddingLeft: `calc(1em + ${theme.spacing(3)}px)`,
         transition: theme.transitions.create('width'),
         width: '100%',
-        fontSize: '0.7em',
-        [theme.breakpoints.up('sm')]: {
-            width: '17ch !important',
-            // '&:focus': {
-            // width: '20ch !important',
-            // },
-        },
+        height: '100%',
+        fontSize: '0.9em',
+        // [theme.breakpoints.up('sm')]: {
+        //     width: '100% !important',
+        //     // '&:focus': {
+        //     // width: '20ch !important',
+        //     // },
+        // },
     },
 }));
 
@@ -132,6 +136,13 @@ HeaderComponent.propTypes = {
 function HeaderMain(props){
     const classes = useStyles();
     const [logIn,setLogIn] = useState(true);
+    const [maxWidth,setMaxWidth] = useState(props.maxWidth);
+    const [showSearch,setShowSearch] = useState(false);
+    const [input,setInput] = useState({
+        value:"",
+        check:false,
+    });
+    const search = useRef();
     const id_num = useRef();
     const btnTitle = [
         {
@@ -203,7 +214,7 @@ function HeaderMain(props){
                         aria-owns={accountMenu.open ? 'simple-menu' : null}
                         aria-haspopup="true"
                         // className="button_white"
-                        className={window.innerWidth > 1200 ? "button_white" : "button_white_small"}
+                        className={maxWidth > 1200 ? "button_white" : "button_white_small"}
                         disableRipple={true}
                         onClick={handleAccountClick}
                         onMouseOver={handleAccountClick}
@@ -223,15 +234,15 @@ function HeaderMain(props){
                     </Menu> */}
                 </div>
             :
-                <div className={window.innerWidth > 1200 ? "button_space" : "account_img"}>
+                <div className={maxWidth > 1200 ? "button_space" : "account_img"}>
                     <button 
                         // className="button_white"
-                        className={window.innerWidth > 1200 ? "button_white" : "button_white_small"} 
-                        style={{display:window.innerWidth > 1200 && !login ? '' : !login && id <= 2 ? '' : 'none'}} 
+                        className={maxWidth > 1200 ? "button_white" : "button_white_small"} 
+                        style={{display:maxWidth > 1200 && !login ? '' : !login && id <= 2 ? '' : 'none'}} 
                         key={id} 
                         onClick={() => clickAccountButton(id)}
                     >
-                        {window.innerWidth > 1200 ? name : <ShowIcon btnVal={btnVal} />}
+                        {maxWidth > 1200 ? name : <ShowIcon btnVal={btnVal} />}
                     </button>
                 </div>
             }
@@ -242,13 +253,40 @@ function HeaderMain(props){
     /**account button click event */
     function clickAccountButton(id_val){
         let info = id_val;
+        setShowSearch(false);
+        setInput({
+            ...input,
+            value: "",
+            check: false,
+        })
         console.log(info);
+    }
+
+    const changeSearch = e => {
+        setInput({
+            ...input,
+            value: e.target.value,
+            check: e.target.value.length > 0,
+        });
+    }
+
+    const handleClose = e => {
+        if(search.current.id == "search" || search.current.children[0].defaultValue.length == 0){
+            setShowSearch(search.current.contains(e.target));
+        }
     }
 
     useEffect(() => {
         id_num.current = btnTitle.length;
-        console.log(window.innerWidth + " :: " + window.outerWidth);
-        //window.innerWidth = 500이 최소 in web
+    },[]);
+
+    useEffect(() => {
+        setMaxWidth(props.maxWidth);
+    },[props.maxWidth]);
+
+    useEffect(() => {
+        window.addEventListener('click', handleClose);
+        return () => window.removeEventListener('click', handleClose);
     },[]);
 
     return (
@@ -260,28 +298,48 @@ function HeaderMain(props){
                 elevation={0}
             >
                 <Toolbar id="header-bar" className="toolbar">
-                    {/* <IconButton edge="start">
-                        <MenuIcon />
-                    </IconButton> */}
-
-                    <div className={classes.search}>
-                        <div className={classes.searchIcon}>
-                            <SearchIcon />
-                        </div>
-                        <InputBase
-                            placeholder=""
-                            classes={{
-                                root: classes.inputRoot,
-                                input: classes.inputInput,
-                            }}
-                            inputProps={{ 'aria-label': 'search' }}
-                        />
+                    <div className="account_img">
+                        <button className="button_white" style={{float:'left'}}>
+                            <img src={require('../../image/crab.png')}/>
+                        </button>
                     </div>
+                    {showSearch &&
+                        <div className={classes.search} style={{width:maxWidth*0.3, maxWidth:'25ch'}}>
+                            <div className={classes.searchIcon}>
+                                <SearchIcon />
+                            </div>
+                            <InputBase
+                                placeholder=""
+                                classes={{
+                                    root: classes.inputRoot,
+                                    input: classes.inputInput,
+                                }}
+                                id="searchInput"
+                                value={input.value}
+                                onChange={(e) => changeSearch(e)}
+                                inputProps={{ 'aria-label': 'search' }}
+                                ref={search}
+                            />
+                        </div>
+                    }
 
                     <div className="account_button_box">
                         {btnTitle.map( btn => (
                             <AccountButton key={btn.id} btnVal={btn} onClick={() => clickAccountButton(btn.id)}/>
                         ))}
+
+                        {showSearch ||
+                            <div className="account_img">
+                                <button
+                                    className={maxWidth > 1200 ? "button_white" : "button_white_small"}
+                                    style={{marginTop:'2px'}}
+                                    id="search"
+                                    ref={search}
+                                >
+                                    <SearchIcon style={{fontSize:30}} value="" />
+                                </button>
+                            </div>
+                        }
                     </div>
                 </Toolbar>
             </AppBar>
